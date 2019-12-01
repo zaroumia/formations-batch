@@ -5,6 +5,7 @@ import static com.zaroumia.batch.mappers.FormateurItemPreparedStatementSetter.FO
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
 import com.zaroumia.batch.doamine.Formateur;
+import com.zaroumia.batch.listeners.ChargementFormateursStepListener;
 import com.zaroumia.batch.mappers.FormateurItemPreparedStatementSetter;
 
 @Configuration
@@ -52,6 +54,12 @@ public class ChargementFormateursStepConfig {
 				.<Formateur, Formateur>chunk(10)
 				.reader(formateurItemReader(null))
 				.writer(formateurItemWriter(null))
+				.listener(chargementFormateursListener())
 				.build();
+	}
+
+	@Bean
+	public StepExecutionListener chargementFormateursListener() {
+		return new ChargementFormateursStepListener();
 	}
 }
