@@ -1,4 +1,4 @@
-package com.zaroumia.batch.doamine;
+package com.zaroumia.batch.domaine;
 
 public class Formateur {
 

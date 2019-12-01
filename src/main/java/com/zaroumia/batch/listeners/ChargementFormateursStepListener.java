@@ -7,7 +7,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.listener.StepListenerSupport;
 
-import com.zaroumia.batch.doamine.Formateur;
+import com.zaroumia.batch.domaine.Formateur;
 
 public class ChargementFormateursStepListener extends StepListenerSupport<Formateur, Formateur>
 		implements StepExecutionListener {

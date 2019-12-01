@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 
-import com.zaroumia.batch.doamine.Formateur;
+import com.zaroumia.batch.domaine.Formateur;
 
 public class FormateurItemPreparedStatementSetter implements ItemPreparedStatementSetter<Formateur> {
 
