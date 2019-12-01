@@ -1,9 +1,12 @@
 package com.zaroumia.batch;
 
+import javax.sql.DataSource;
+
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.batch.item.xml.builder.StaxEventItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +16,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.zaroumia.batch.domaine.Formation;
+import com.zaroumia.batch.mappers.FormationItemPreparedStatementSetter;
 
 @Configuration
 public class ChargementFormationsStepConfig {
@@ -36,8 +40,13 @@ public class ChargementFormationsStepConfig {
 	}
 
 	@Bean
-	public ItemWriter<Formation> formationItemWriter() {
-		return (items) -> items.forEach(System.out::println);
+	public ItemWriter<Formation> formationItemWriter(final DataSource dataSource) {
+		return new JdbcBatchItemWriterBuilder<Formation>()
+				.dataSource(dataSource)
+				.sql("INSERT INTO formations (code, libelle, descriptif) VALUES (?,?,?);")
+				.itemPreparedStatementSetter(new FormationItemPreparedStatementSetter())
+				.build();
+
 	}
 
 	@Bean
@@ -45,7 +54,7 @@ public class ChargementFormationsStepConfig {
 		return stepBuilderFactory.get("chargementFormationsStep")
 				.<Formation, Formation>chunk(10)
 				.reader(formationItemReader(null))
-				.writer(formationItemWriter())
+				.writer(formationItemWriter(null))
 				.build();
 	}
 }
