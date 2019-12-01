@@ -1,0 +1,28 @@
+@startuml
+class Formateur{
+  	-Integer id
+	-String nom
+	-String prenom
+	-String adresseEmail
+}
+
+class Seance {
+
+	-Integer idFormateur
+	-String codeFormation
+	-LocalDate dateDebut
+	-LocalDate dateFin
+}
+
+class Formation {
+
+	-String code
+	-String libelle
+	-String descriptif
+}
+
+
+
+Seance o- Formation : concerne >
+Seance o- Formateur: présentée par>
+@enduml

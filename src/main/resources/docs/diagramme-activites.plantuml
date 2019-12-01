@@ -1,0 +1,16 @@
+@startuml
+start
+:Valider les paramétres du Job;
+ fork
+:Charger les formateurs depuis un fichier CSV;
+  fork again
+:Charger les formations depuis un fichier XML;
+end fork
+if(Quelle est l'extention du fichier des séances ?) then (CSV)
+:Charger les séances depuis un fichier CSV;
+else (TXT)
+:Charger les séance depuis un fichier TXT;
+endif
+:Envoyer un mail à chaque formateur l'informant de son planning;
+stop
+@enduml

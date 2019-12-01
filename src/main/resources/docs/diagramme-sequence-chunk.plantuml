@@ -1,0 +1,7 @@
+@startuml
+loop pour chaque item dans le chunk
+	source -> ItemReader : lire
+	ItemReader -> ItemProcessor: traiter
+end
+ItemProcessor -> ItemWriter : écrire
+@enduml
