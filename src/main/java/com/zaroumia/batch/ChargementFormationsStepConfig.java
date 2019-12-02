@@ -3,6 +3,7 @@ package com.zaroumia.batch;
 import javax.sql.DataSource;
 
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemWriter;
@@ -16,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import com.zaroumia.batch.domaine.Formation;
+import com.zaroumia.batch.listeners.ChargementFormationsStepListener;
 import com.zaroumia.batch.mappers.FormationItemPreparedStatementSetter;
 
 @Configuration
@@ -25,7 +27,7 @@ public class ChargementFormationsStepConfig {
 	@StepScope
 	public StaxEventItemReader<Formation> formationItemReader(
 			@Value("#{jobParameters['formationsFile']}") final Resource inputFile) {
-		return new StaxEventItemReaderBuilder().name("formationItemReader")
+		return new StaxEventItemReaderBuilder<Formation>().name("formationItemReader")
 				.resource(inputFile)
 				.addFragmentRootElements("formation")
 				.unmarshaller(formationMarshaller())
@@ -55,6 +57,12 @@ public class ChargementFormationsStepConfig {
 				.<Formation, Formation>chunk(10)
 				.reader(formationItemReader(null))
 				.writer(formationItemWriter(null))
+				.listener(chargementFormationsListener())
 				.build();
+	}
+
+	@Bean
+	public StepExecutionListener chargementFormationsListener() {
+		return new ChargementFormationsStepListener();
 	}
 }
