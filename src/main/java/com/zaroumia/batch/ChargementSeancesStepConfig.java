@@ -15,6 +15,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
+import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,22 @@ public class ChargementSeancesStepConfig {
 				.resource(inputFile)
 				.delimited()
 				.delimiter(";")
+				.names(new String[] { "codeFormation", "idFormateur", "dateDebut",
+						"dateFin" })
+				.fieldSetMapper(seanceFieldSetMapper(null))
+				.build();
+	}
+
+	@Bean
+	@StepScope
+	public FlatFileItemReader<Seance> seanceTxtItemReader(
+			@Value("#{jobParameters['seancesFile']}") final Resource inputFile) {
+		return new FlatFileItemReaderBuilder<Seance>()
+				.name("seanceTxtItemReader")
+				.resource(inputFile)
+				.fixedLength()
+				.columns(new Range[] { new Range(1, 16), new Range(17, 20), new Range(25,
+						32), new Range(37, 44) })
 				.names(new String[] { "codeFormation", "idFormateur", "dateDebut",
 						"dateFin" })
 				.fieldSetMapper(seanceFieldSetMapper(null))
@@ -79,10 +96,20 @@ public class ChargementSeancesStepConfig {
 	}
 
 	@Bean
-	public Step chargementSeancesStep(final StepBuilderFactory stepBuilderFactory) {
-		return stepBuilderFactory.get("chargementSeancesStep")
+	public Step chargementSeancesCsvStep(final StepBuilderFactory stepBuilderFactory) {
+		return stepBuilderFactory.get("chargementSeancesCsvStep")
 				.<Seance, Seance>chunk(10)
 				.reader(seanceCsvItemReader(null))
+				.writer(seanceItemWriter(null))
+				.listener(chargementSeancesStepListener())
+				.build();
+	}
+
+	@Bean
+	public Step chargementSeancesTxtStep(final StepBuilderFactory stepBuilderFactory) {
+		return stepBuilderFactory.get("chargementSeancesTxtStep")
+				.<Seance, Seance>chunk(10)
+				.reader(seanceTxtItemReader(null))
 				.writer(seanceItemWriter(null))
 				.listener(chargementSeancesStepListener())
 				.build();
