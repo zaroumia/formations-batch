@@ -9,6 +9,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.step.skip.SkipPolicy;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -96,11 +97,18 @@ public class ChargementSeancesStepConfig {
 	}
 
 	@Bean
+	public SkipPolicy seanceSkipPolicy() {
+		return new SeanceSkipPolicy();
+	}
+
+	@Bean
 	public Step chargementSeancesCsvStep(final StepBuilderFactory stepBuilderFactory) {
 		return stepBuilderFactory.get("chargementSeancesCsvStep")
 				.<Seance, Seance>chunk(10)
 				.reader(seanceCsvItemReader(null))
 				.writer(seanceItemWriter(null))
+				.faultTolerant()
+				.skipPolicy(seanceSkipPolicy())
 				.listener(chargementSeancesStepListener())
 				.build();
 	}
@@ -111,6 +119,8 @@ public class ChargementSeancesStepConfig {
 				.<Seance, Seance>chunk(10)
 				.reader(seanceTxtItemReader(null))
 				.writer(seanceItemWriter(null))
+				.faultTolerant()
+				.skipPolicy(seanceSkipPolicy())
 				.listener(chargementSeancesStepListener())
 				.build();
 	}
