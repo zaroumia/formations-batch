@@ -1,5 +1,7 @@
 package com.zaroumia.batch;
 
+import java.io.IOException;
+
 import javax.sql.DataSource;
 
 import org.springframework.batch.item.ItemProcessor;
@@ -11,7 +13,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import com.zaroumia.batch.domaine.Planning;
 import com.zaroumia.batch.mappers.PlanningRowMapper;
+import com.zaroumia.batch.services.MailContentGenerator;
+import com.zaroumia.batch.services.MailContentGeneratorImpl;
 import com.zaroumia.batch.validators.PlanningProcessor;
+
+import freemarker.core.ParseException;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.TemplateNotFoundException;
 
 @Configuration
 public class PlanningStepConfig {
@@ -29,5 +37,11 @@ public class PlanningStepConfig {
 	@Bean
 	public ItemProcessor<Planning, Planning> planningProcessor(final NamedParameterJdbcTemplate jdbcTemplate) {
 		return new PlanningProcessor(jdbcTemplate);
+	}
+
+	@Bean
+	public MailContentGenerator mailContentGenerator(final freemarker.template.Configuration conf)
+			throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException {
+		return new MailContentGeneratorImpl(conf);
 	}
 }
