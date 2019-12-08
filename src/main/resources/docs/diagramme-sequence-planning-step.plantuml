@@ -1,0 +1,6 @@
+@startuml
+Source -> ItemReader : Lire unformateur depuis la BD
+ItemReader -> ItemProcessor: Récupérer les séances du formateur
+
+ItemProcessor -> ItemWriter : Envoyer un mail au formateur
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+class PlanningItem {
+
+	-String libelleFormation
+	-String descriptifFormation
+	-LocalDate dateDebutSeance
+	-LocalDate dateFinSeance
+}
+
+class Planning {
+
+	-Formateur formateur
+	-List<PlanningItem> seances
+}
+
+Planning *-- PlanningItem : concerne >
+@enduml
