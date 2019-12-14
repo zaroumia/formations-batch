@@ -10,11 +10,14 @@ import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuild
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.zaroumia.batch.domaine.Planning;
 import com.zaroumia.batch.mappers.PlanningRowMapper;
 import com.zaroumia.batch.services.MailContentGenerator;
 import com.zaroumia.batch.services.MailContentGeneratorImpl;
+import com.zaroumia.batch.services.PlanningMailSenderService;
+import com.zaroumia.batch.services.PlanningMailSenderServiceImpl;
 import com.zaroumia.batch.validators.PlanningProcessor;
 
 import freemarker.core.ParseException;
@@ -43,5 +46,10 @@ public class PlanningStepConfig {
 	public MailContentGenerator mailContentGenerator(final freemarker.template.Configuration conf)
 			throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException {
 		return new MailContentGeneratorImpl(conf);
+	}
+
+	@Bean
+	public PlanningMailSenderService planningMailSenderService(final JavaMailSender javaMailSender) {
+		return new PlanningMailSenderServiceImpl(javaMailSender);
 	}
 }
