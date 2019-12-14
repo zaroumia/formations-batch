@@ -99,7 +99,7 @@ https://divtable.com/table-styler/
         <td>${item.dateDebutSeance}</td>
         <td>${item.dateFinSeance}</td>
       </tr>
-      <#list>
+      </#list>
     </tbody>
   </table>
 

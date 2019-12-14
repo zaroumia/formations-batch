@@ -49,15 +49,15 @@ public class BatchConfig {
 	@Bean
 	public Job job(final JobBuilderFactory jobBuilderFactory, final Step chargementFormateursStep,
 			final Step chargementFormationsStep, final Step chargementSeancesCsvStep,
-			final Step chargementSeancesTxtStep) {
+			final Step chargementSeancesTxtStep, final Step planningStep) {
 		return jobBuilderFactory.get("formations-batch")
 				.start(chargementFormateursStep)
 				.next(chargementFormationsStep)
 				.next(seancesStepDecider())
 				.from(seancesStepDecider()).on("txt").to(chargementSeancesTxtStep)
 				.from(seancesStepDecider()).on("csv").to(chargementSeancesCsvStep)
-				.from(chargementSeancesTxtStep).on("*").end()
-				.from(chargementSeancesCsvStep).on("*").end()
+				.from(chargementSeancesTxtStep).on("*").to(planningStep)
+				.from(chargementSeancesCsvStep).on("*").to(planningStep)
 				.end()
 				.validator(compositeJobParametersValidator())
 				.incrementer(new RunIdIncrementer())
