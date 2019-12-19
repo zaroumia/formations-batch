@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<formations>
+	<formation>
+		<code>SPRINGBASE01</code>
+		<libelle>Spring framework : Etape par étape pour devenir professionel</libelle>
+		<descriptif>Apprendre comment fonctionne Spring Framework (ioc, jdbc, test, jpa, aop, tx) pour passer au niveau professionnel </descriptif>
+	</formation>
+	<formation>
+		<code>SPRINGBATCH01</code>
+		<libelle>Spring Batch par la pratique</libelle>
+		<descriptif>Apprendre comment fonctionne Spring batch et développer vos batches avec le minimum d'effort</descriptif>
+	</formation>
+	<formation>
+		<code>SPRINGBOOT01</code>
+		<libelle>Spring Boot par la pratique</libelle>
+		<descriptif>Apprendre comment fonctionne Spring boot et développer rapidement vos applications microservices </descriptif>
+	</formation>
+	<formation>
+		<code>HIBERNAT01</code>
+		<libelle>Hibernate : les secrets sont dévoilés</libelle>
+		<descriptif>Apprendre comment fonctionne Hibernate et maitriser le développement de la couche de persistance </descriptif>
+	</formation>
+
+</formations>
