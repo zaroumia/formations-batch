@@ -9,10 +9,13 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.job.CompositeJobParametersValidator;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
+import org.springframework.batch.core.job.builder.FlowBuilder;
+import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 import com.zaroumia.batch.validators.MyJobParametersValidator;
 import com.zaroumia.batch.validators.deciders.SeancesStepDecider;
@@ -47,14 +50,33 @@ public class BatchConfig {
 	}
 
 	@Bean
-	public Job job(final JobBuilderFactory jobBuilderFactory, final Step chargementFormateursStep,
-			final Step chargementFormationsStep, final Step chargementSeancesCsvStep,
+	public Flow chargementFormateursFlow(final Step chargementFormateursStep) {
+		return new FlowBuilder<Flow>("chargementFormateursFlow")
+				.start(chargementFormateursStep)
+				.end();
+	}
+
+	@Bean
+	public Flow chargementFormationsFlow(final Step chargementFormationsStep) {
+		return new FlowBuilder<Flow>("chargementFormationsFlow")
+				.start(chargementFormationsStep)
+				.end();
+	}
+
+	@Bean
+	public Flow parallelFlow() {
+		return new FlowBuilder<Flow>("parallelFlow")
+				.split(new SimpleAsyncTaskExecutor())
+				.add(chargementFormateursFlow(null), chargementFormationsFlow(null))
+				.end();
+	}
+
+	@Bean
+	public Job job(final JobBuilderFactory jobBuilderFactory, final Step chargementSeancesCsvStep,
 			final Step chargementSeancesTxtStep, final Step planningStep) {
 		return jobBuilderFactory.get("formations-batch")
-				.start(chargementFormateursStep)
-				.next(chargementFormationsStep)
-				.next(seancesStepDecider())
-				.from(seancesStepDecider()).on("txt").to(chargementSeancesTxtStep)
+				.start(parallelFlow())
+				.next(seancesStepDecider()).on("txt").to(chargementSeancesTxtStep)
 				.from(seancesStepDecider()).on("csv").to(chargementSeancesCsvStep)
 				.from(chargementSeancesTxtStep).on("*").to(planningStep)
 				.from(chargementSeancesCsvStep).on("*").to(planningStep)
