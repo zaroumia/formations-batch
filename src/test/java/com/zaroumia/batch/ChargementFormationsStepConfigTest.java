@@ -8,21 +8,21 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 
-public class ChargementFormateursStepConfigTest extends BaseTest {
+public class ChargementFormationsStepConfigTest extends BaseTest {
 
 	@Test
-	public void shouldLoadFormateursWithSuccess() {
+	public void shouldLoadFormationsWithSuccess() {
 		JobParameters jobParameters = new JobParametersBuilder()
-				.addString("formateursFile", "classpath:inputs/formateursFile.csv")
+				.addString("formationsFile", "classpath:inputs/formationsFile.xml")
 				.toJobParameters();
 
-		JobExecution result = jobLauncherTestUtils.launchStep("chargementFormateursStep", jobParameters);
+		JobExecution result = jobLauncherTestUtils.launchStep("chargementFormationsStep", jobParameters);
 
 		assertThat(result.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 
-		Integer count = jdbcTemplate.queryForObject("select count(*) from formateurs", Integer.class);
+		Integer count = jdbcTemplate.queryForObject("select count(*) from formations", Integer.class);
 
-		assertThat(count).isEqualTo(16);
+		assertThat(count).isEqualTo(4);
 	}
 
 }
