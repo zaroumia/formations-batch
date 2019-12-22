@@ -1,4 +1,4 @@
-package com.zaroumia.batch.validators.writers;
+package com.zaroumia.batch.writers;
 
 import java.util.List;
 

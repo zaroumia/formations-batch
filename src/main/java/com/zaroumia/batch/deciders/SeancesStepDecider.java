@@ -1,4 +1,4 @@
-package com.zaroumia.batch.validators.deciders;
+package com.zaroumia.batch.deciders;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;

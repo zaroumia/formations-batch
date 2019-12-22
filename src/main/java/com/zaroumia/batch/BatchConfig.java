@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
+import com.zaroumia.batch.deciders.SeancesStepDecider;
 import com.zaroumia.batch.validators.MyJobParametersValidator;
-import com.zaroumia.batch.validators.deciders.SeancesStepDecider;
 
 @Configuration
 @EnableBatchProcessing

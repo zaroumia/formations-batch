@@ -11,17 +11,17 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import com.zaroumia.batch.dao.SeanceDao;
 import com.zaroumia.batch.domaine.Planning;
 import com.zaroumia.batch.mappers.PlanningRowMapper;
+import com.zaroumia.batch.processors.PlanningProcessor;
 import com.zaroumia.batch.services.MailContentGenerator;
 import com.zaroumia.batch.services.MailContentGeneratorImpl;
 import com.zaroumia.batch.services.PlanningMailSenderService;
 import com.zaroumia.batch.services.PlanningMailSenderServiceImpl;
-import com.zaroumia.batch.validators.PlanningProcessor;
-import com.zaroumia.batch.validators.writers.PlanningItemWriter;
+import com.zaroumia.batch.writers.PlanningItemWriter;
 
 import freemarker.core.ParseException;
 import freemarker.template.MalformedTemplateNameException;
@@ -41,8 +41,8 @@ public class PlanningStepConfig {
 	}
 
 	@Bean
-	public ItemProcessor<Planning, Planning> planningProcessor(final NamedParameterJdbcTemplate jdbcTemplate) {
-		return new PlanningProcessor(jdbcTemplate);
+	public ItemProcessor<Planning, Planning> planningProcessor(final SeanceDao seanceDao) {
+		return new PlanningProcessor(seanceDao);
 	}
 
 	@Bean

@@ -9,7 +9,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
 import org.springframework.test.context.jdbc.Sql;
 
 public class PlanningStepConfigTest extends BaseTest {
@@ -18,7 +17,7 @@ public class PlanningStepConfigTest extends BaseTest {
 	@Sql("classpath:init-all-tables.sql")
 	public void shouldSendPlanningsWithSuccess() throws MessagingException {
 
-		JobExecution result = jobLauncherTestUtils.launchStep("planningStep", new JobParameters());
+		JobExecution result = jobLauncherTestUtils.launchStep("planningStep");
 
 		assertThat(result.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 

@@ -28,6 +28,7 @@ import org.springframework.core.io.Resource;
 import com.zaroumia.batch.domaine.Seance;
 import com.zaroumia.batch.listeners.ChargementSeancesStepListener;
 import com.zaroumia.batch.mappers.SeanceItemPreparedStatementSetter;
+import com.zaroumia.batch.policies.SeanceSkipPolicy;
 
 @Configuration
 public class ChargementSeancesStepConfig {

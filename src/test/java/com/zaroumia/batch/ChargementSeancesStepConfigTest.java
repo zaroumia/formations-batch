@@ -7,10 +7,16 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
+
+import com.zaroumia.batch.dao.SeanceDao;
 
 @Sql(scripts = { "classpath:init-formations-formateurs-tables.sql" })
 public class ChargementSeancesStepConfigTest extends BaseTest {
+
+	@Autowired
+	private SeanceDao seanceDao;
 
 	@Test
 	public void shouldLoadSeancesCsvWithSuccess() {
@@ -22,9 +28,7 @@ public class ChargementSeancesStepConfigTest extends BaseTest {
 
 		assertThat(result.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 
-		Integer count = jdbcTemplate.queryForObject("select count(*) from seances", Integer.class);
-
-		assertThat(count).isEqualTo(20);
+		assertThat(seanceDao.count()).isEqualTo(20);
 	}
 
 	@Test
@@ -37,9 +41,7 @@ public class ChargementSeancesStepConfigTest extends BaseTest {
 
 		assertThat(result.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 
-		Integer count = jdbcTemplate.queryForObject("select count(*) from seances", Integer.class);
-
-		assertThat(count).isEqualTo(20);
+		assertThat(seanceDao.count()).isEqualTo(20);
 	}
 
 }

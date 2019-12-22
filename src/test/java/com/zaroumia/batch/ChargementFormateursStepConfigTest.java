@@ -7,8 +7,14 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.zaroumia.batch.dao.FormateurDao;
 
 public class ChargementFormateursStepConfigTest extends BaseTest {
+
+	@Autowired
+	private FormateurDao formateurDao;
 
 	@Test
 	public void shouldLoadFormateursWithSuccess() {
@@ -20,9 +26,7 @@ public class ChargementFormateursStepConfigTest extends BaseTest {
 
 		assertThat(result.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
 
-		Integer count = jdbcTemplate.queryForObject("select count(*) from formateurs", Integer.class);
-
-		assertThat(count).isEqualTo(16);
+		assertThat(formateurDao.count()).isEqualTo(16);
 	}
 
 }
