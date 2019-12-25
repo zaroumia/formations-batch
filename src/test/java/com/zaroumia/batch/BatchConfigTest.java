@@ -2,20 +2,24 @@ package com.zaroumia.batch;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
 import com.zaroumia.batch.dao.FormateurDao;
 import com.zaroumia.batch.dao.FormationDao;
 import com.zaroumia.batch.dao.SeanceDao;
 
-public class BtachConfigTest extends BaseTest {
+public class BatchConfigTest extends BaseTest {
+
+	@Rule
+	public GreenMailRule serverSmtp = new GreenMailRule(new ServerSetup(2525, "localhost", ServerSetup.PROTOCOL_SMTP));
 
 	@Autowired
 	private FormateurDao formateurDao;
@@ -38,8 +42,8 @@ public class BtachConfigTest extends BaseTest {
 		assertThat(formateurDao.count()).isEqualTo(16);
 		assertThat(formationDao.count()).isEqualTo(4);
 		assertThat(seanceDao.count()).isEqualTo(20);
-		Mockito.verify(planningMailSenderService, Mockito.times(4)).send(ArgumentMatchers.any(),
-				ArgumentMatchers.any());
+		assertThat(serverSmtp.getReceivedMessages()).hasSize(4);
+		assertThat(serverSmtp.getReceivedMessages()[0].getSubject()).isEqualTo("Votre planning de formations");
 	}
 
 }
